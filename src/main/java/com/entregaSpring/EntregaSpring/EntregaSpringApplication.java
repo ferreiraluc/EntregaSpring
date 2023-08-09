@@ -1,44 +1,44 @@
 package com.entregaSpring.EntregaSpring;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
-
 
 @SpringBootApplication
+@RestController
+@RequestMapping("/dados")
 public class EntregaSpringApplication {
 
+	private List<Double> valores = new ArrayList<>();
+
 	public static void main(String[] args) {
-
 		SpringApplication.run(EntregaSpringApplication.class, args);
+	}
 
-		Scanner scanner = new Scanner(System.in);
-		List<Double> valores = new ArrayList<>();
+	@PostMapping("/AdicionarValor")
+	public String addValue(@RequestBody List<Double> numero) {
+		valores = numero;
+		return "Valor adicionado com sucesso!";
+	}
 
-		for (int i = 0; i < 20; i++) {
-			System.out.print("Digite o valor " + (i + 1) + ": ");
-			double valor = scanner.nextDouble();
-			valores.add(valor);
+	@GetMapping("/CalcularValor")
+	public String calculateStatistics() {
+		if (valores.isEmpty()) {
+			return "Nenhum valor foi inserido ainda.";
 		}
 
-		System.out.println("Valores inseridos: " + valores);
-
 		double media = calcularMedia(valores);
-		System.out.printf("Média: %.2f%n", media);
-
 		double desvioPadrao = calcularDesvioPadrao(valores, media);
-		System.out.printf("Desvio Padrão: %.2f%n", desvioPadrao);
-
 		double mediana = calcularMediana(valores);
-		System.out.printf("Mediana: %.2f%n", mediana);
-
 		int quantidade = valores.size();
-		System.out.println("Quantidade de numeros inseridos: " + quantidade);
 
-		scanner.close();
-
+		return  "Valores: " + valores +
+				"\nMédia: " + media +
+				"\nDesvio Padrão: " + desvioPadrao +
+				"\nMediana: " + mediana +
+				"\nQuantidade de números inseridos: " + quantidade;
 	}
 
 	private static double calcularMedia(List<Double> valores) {
@@ -67,8 +67,4 @@ public class EntregaSpringApplication {
 			return valores.get(valores.size() / 2);
 		}
 	}
-
-
-
-
 }
